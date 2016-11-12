@@ -2,10 +2,9 @@
   "name": "semserver",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "client.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "test": "node bin.js"
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
