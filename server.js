@@ -8,7 +8,7 @@ const {addToRegistry, resolveRegistry, getService} = require('./registry');
 const app = express();
 
 const port = process.env.PORT || 7888;
-const auth = (req, res, next) => next(req.headers.authorization !== `Token ${process.env.APIKEY}` && new Unauthorized('Bad API key'));
+const auth = (req, res, next) => next(process.env.APIKEY && req.headers.authorization !== `Token ${process.env.APIKEY}` && new Unauthorized('Bad API key'));
 
 app.options('/:service', (req, res, next) => getService(req.params.service)
 	.then(service => res.json(service))

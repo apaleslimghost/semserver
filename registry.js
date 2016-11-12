@@ -6,6 +6,7 @@ const registry = {};
 const swear = fn => (...args) => Promise.resolve().then(() => fn(...args));
 
 exports.addToRegistry = swear(({service, version, endpoint}) => {
+	if(!semver.valid(version)) throw new BadRequest(`${version} is not a valid semver version`);
 	if(registry[service] && registry[service][version]) throw new Conflict(`${service}@${version} already exists`);
 
 	merge(registry, {
