@@ -1,8 +1,13 @@
+const semver = require('semver');
 const merge = require('lodash.merge');
+const {NotFound, Conflict, BadRequest, NotImplemented} = require('http-errors')
 
 const registry = {};
+const swear = fn => (...args) => Promise.resolve().then(() => fn(...args));
 
-exports.addToRegistry = ({service, version, endpoint}) => {
+exports.addToRegistry = swear(({service, version, endpoint}) => {
+	if(registry[service] && registry[service][version]) throw new Conflict(`${service}@${version} already exists`);
+
 	merge(registry, {
 		[service]: {
 			[version]: endpoint,
@@ -10,17 +15,17 @@ exports.addToRegistry = ({service, version, endpoint}) => {
 	});
 
 	return Promise.resolve({service, version, endpoint});
-};
+});
 
-exports.getService = service => {
-	if(!registry[service]) throw new Error(`Service ${service} is not in registry`);
-	return Promise.resolve(registry[service])
-};
+exports.getService = swear(service => {
+	if(!registry[service]) throw new NotFound(`Service ${service} is not in registry`);
+	return registry[service];
+});
 
-exports.resolveRegistry = ({service, version}) => exports.getService(service).then(service => {
-	const versions = Object.keys(service);
+exports.resolveRegistry = swear(({service, version}) => exports.getService(service).then(serviceEntry => {
+	const versions = Object.keys(serviceEntry);
 	const match = semver.maxSatisfying(versions, version);
-	if(!semver.validRange(version)) throw new Error(`${version} is not a valid semver range`);
-	if(!match) throw new Error(`No compatible version for ${service}@${version}. Available versions: ${versions.join(', ')}`);
+	if(!semver.validRange(version)) throw new BadRequest(`${version} is not a valid semver range`);
+	if(!match) throw new NotImplemented(`No compatible version for ${service}@${version}. Available versions: ${versions.join(', ')}`);
 	return Promise.resolve(registry[service][match]);
-});;
+}));
