@@ -34,4 +34,10 @@ app.all('/:service/:version/*', (req, res, next) => {
 	}).catch(next);
 });
 
+app.use((err, req, res, next) => {
+	res.status(err.status || 500);
+	res.send(err.message);
+	next(err);
+});
+
 app.listen(port, () => console.log(`⛭ listening on port ${port}`));
