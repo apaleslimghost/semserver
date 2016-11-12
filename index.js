@@ -1,13 +1,17 @@
 const express = require('express');
 const semver = require('semver');
-const merge = require('lodash.merge');
 const bodyParser = require('body-parser');
 const url = require('url');
-const {addToRegistry, resolveRegistry} = require('./registry');
+const {addToRegistry, resolveRegistry, getService} = require('./registry');
 
 const app = express();
 
 const port = process.env.PORT || 7888;
+
+app.options('/:service', (req, res, next) => getService(req.params.service)
+	.then(service => res.json(service))
+	.catch(next)
+);
 
 app.post('/:service/:version', bodyParser.urlencoded({extended: false}), (req, res, next) => {
 	const {service, version} = req.params;
