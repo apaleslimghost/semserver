@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "Matt Brennan <matt@153.io> (http://blog.153.io/)",
-  "license": "MIT",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/quarterto/semserver/issues"
   },

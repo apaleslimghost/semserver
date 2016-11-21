@@ -91,3 +91,46 @@ Status code | Description
 `400`       | The version is not a valid semver range string
 `404`       | The service doesn't exist in the registry at all
 `501`       | The service has no versions that match the range or exact version you wanted
+
+## Command line
+
+So you can automatically register a service to a registry (e.g. on deploy), we provide a command line script. It's intended to be used as an npm script, and it takes your service name and version from package.json, as well as the registry host, which you should put in package.json as `"semserver": {"host": "semserver.example.com"}`. Finally, pass the endpoint you're registering as the single command line argument.
+
+For example, if you're deploying to [now.sh](https://now.sh), you can use the `now-build` lifecycle script to register your service. Now provides the `NOW_URL` environment variable, so your package.json should look like:
+
+```json
+{
+	"name": "my-service",
+	"version": "1.0.0",
+	"scripts": {
+		"now-start": "...",
+		"now-build": "semserver $NOW_URL"
+	},
+	"dependencies": {
+		"semserver": "^1.0.0"
+	},
+	"semserver": {
+		"host": "semserver.example.com"
+	}
+}
+```
+
+If your semserver has an API key configured, use the environment variable `SEMSERVER_KEY` to tell the CLI about it.
+
+## Client library
+
+We also provide a client library, which is a thin wrapper around [`got`](https://github.com/sindresorhus/got).
+
+### Usage
+
+```js
+const semserver = require('semserver');
+const registry = semserver('https://semserver.example.com');
+const service = registry('my-service', '^1.0.0');
+
+service('/thing/1').then(...);
+```
+
+## Licence
+
+ISC. &copy; Matt Brennan
