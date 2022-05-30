@@ -5,7 +5,7 @@
 
 Register a service version
 
-```http
+```
 > POST /my-service/1.0.0
 >
 > endpoint=http://my-service-adsfghjk.now.sh
@@ -13,7 +13,7 @@ Register a service version
 
 and you can query it:
 
-```http
+```
 > GET /my-service/^1.0.0/thing/1
 
 < HTTP/1.1 307 Temporary Redirect
@@ -22,7 +22,7 @@ and you can query it:
 
 Register another version
 
-```http
+```
 > POST /my-service/1.1.0
 >
 > endpoint=http://my-service-zxcvbnm.now.sh
@@ -30,7 +30,7 @@ Register another version
 
 and you get the latest that satisfies the range:
 
-```http
+```
 > GET /my-service/^1.0.0/thing/1
 
 < HTTP/1.1 307 Temporary Redirect
@@ -133,4 +133,4 @@ service('/thing/1').then(...);
 
 ## Licence
 
-ISC. &copy; Matt Brennan
+ISC. &copy; Kara Brightwell
